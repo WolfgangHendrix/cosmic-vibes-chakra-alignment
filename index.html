@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Chakra Healing">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>7 Chakra Solfeggio & Binaural Healing</title>
+  <!-- itch.io / Open Graph metadata -->
+  <meta property="og:title" content="7 Chakra Solfeggio & Binaural Healing">
+  <meta property="og:description" content="A portable chakra frequency generator with Solfeggio tones and binaural beat integration for meditation.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧘</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "VideoGame",
+    "name": "7 Chakra Solfeggio & Binaural Healing",
+    "description": "A portable chakra frequency generator with Solfeggio tones and binaural beat integration for meditation.",
+    "genre": "Meditation",
+    "gamePlatform": "Web Browser",
+    "operatingSystem": "Any",
+    "applicationCategory": "Browser Game"
+  }
+  </script>
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+
+    /* Launch Screen */
+    #launch-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at 50% 50%, #1a0533 0%, #0a0a0a 70%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 5vh 5vw;
+      cursor: pointer;
+      animation: launchPulse 4s ease-in-out infinite;
+      overflow: hidden;
+    }
+    @keyframes launchPulse {
+      0%, 100% { background: radial-gradient(ellipse at 50% 50%, #1a0533 0%, #0a0a0a 70%); }
+      50% { background: radial-gradient(ellipse at 50% 50%, #2a0a4a 0%, #0a0a0a 70%); }
+    }
+
+    /* Sacred geometry mandala */
+    #launch-mandala {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(80vw, 80vh);
+      height: min(80vw, 80vh);
+      opacity: 0.12;
+      pointer-events: none;
+      animation: mandalaRotate 60s linear infinite;
+    }
+    #launch-mandala .ring-1 { animation: mandalaRotate 40s linear infinite; transform-origin: center; }
+    #launch-mandala .ring-2 { animation: mandalaRotate 28s linear infinite reverse; transform-origin: center; }
+    #launch-mandala .ring-3 { animation: mandalaRotate 18s linear infinite; transform-origin: center; }
+    @keyframes mandalaRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Launch content sits above the mandala */
+    #launch-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #launch-screen h1 {
+      font-size: clamp(2em, 5vw, 3.5em);
+      margin-bottom: 4vh;
+      background: linear-gradient(90deg, #ff0000, #ff8c00, #ffff00, #00ff00, #00bfff, #4b0082, #8b00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.3); }
+    }
+    #launch-screen .headphone-note {
+      font-size: clamp(1em, 2.2vw, 1.4em);
+      color: rgba(200, 180, 255, 0.75);
+      margin-bottom: 6vh;
+      max-width: 480px;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+    #launch-screen .tap-instruction {
+      font-size: clamp(0.9em, 2vw, 1.2em);
+      opacity: 0;
+      letter-spacing: 0.08em;
+      animation: tapFadeIn 1.5s ease forwards 1.2s, tapBreathe 3s ease-in-out infinite 2.7s;
+    }
+    @keyframes tapFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 0.55; transform: translateY(0); }
+    }
+    @keyframes tapBreathe {
+      0%, 100% { opacity: 0.55; }
+      50%       { opacity: 0.25; }
+    }
+
+/* Main App Container */
+#app-container {
+  width: 100%;
+  max-width: 1080px;
+  height: 100%;
+  max-height: 1920px;
+  margin: 0 auto;
+  position: relative;
+  background: radial-gradient(ellipse at 50% 0%, #1a0533 0%, #0a0a0a 60%);
+  display: none;
+  overflow: hidden;
+}
+
+    /* Space Background - Stars Layer */
+    #app-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 200px 60px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(2px 2px at 250px 20px, #fff, transparent),
+        radial-gradient(1px 1px at 300px 50px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2px 2px at 350px 90px, #fff, transparent),
+        radial-gradient(1px 1px at 400px 40px, rgba(255,255,255,0.9), transparent);
+      background-repeat: repeat;
+      background-size: 500px 500px;
+      animation: twinkle 8s ease-in-out infinite alternate;
+      opacity: 0.5;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Nebula Glow Effect */
+    #app-container::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(75, 0, 130, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 50%, rgba(0, 100, 255, 0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 80%, rgba(139, 0, 255, 0.08) 0%, transparent 40%);
+      animation: nebulaShift 20s ease-in-out infinite alternate;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.6; }
+    }
+
+    @keyframes nebulaShift {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      100% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+
+
+    /* Chakra Buttons */
+    .chakra-btn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(80px, 15vw, 140px);
+      height: clamp(80px, 15vw, 140px);
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      line-height: 1.3;
+      z-index: 10;
+      font-size: clamp(0.8em, 2vw, 1em);
+      overflow: visible;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+    .chakra-btn:hover { transform: translateX(-50%) scale(1.05); }
+.chakra-btn.active {
+  box-shadow: 0 0 60px var(--chakra-color, currentColor), inset 0 0 30px rgba(255,255,255,0.3);
+  border-color: white;
+  animation: chakraPulse 2s ease-in-out infinite;
+  transition: box-shadow 0.5s ease;
+}
+.chakra-btn {
+  transition: all 0.3s ease, box-shadow 0.5s ease;
+}
+.chakra-btn .freq { font-size: clamp(1em, 3vw, 1.4em); margin-top: 8px; transition: font-size 0.3s ease; letter-spacing: 0.03em; }
+.chakra-btn .symbol { font-size: clamp(1.2em, 2.5vw, 1.6em); margin-bottom: 4px; line-height: 1; }
+.chakra-btn .name { font-size: clamp(0.7em, 1.5vw, 0.9em); opacity: 0.9; transition: opacity 0.3s ease; letter-spacing: 0.05em; }
+.chakra-btn.active .name { opacity: 1; }
+
+    /* Chakra Symbols */
+    #crown .symbol::before { content: '✦'; }
+    #third-eye .symbol::before { content: '☯'; }
+    #throat .symbol::before { content: '🕉'; }
+    #heart .symbol::before { content: '❤'; }
+    #solar-plexus .symbol::before { content: '☀'; }
+    #sacral .symbol::before { content: '🔥'; }
+    #root .symbol::before { content: '⚡'; }
+
+    /* Active Ring Animation */
+    .chakra-btn::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .chakra-btn.active::after {
+      border-color: rgba(255,255,255,0.4);
+      animation: ringRotate 3s linear infinite;
+    }
+
+    @keyframes chakraPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.03); }
+    }
+
+    @keyframes ringRotate {
+      0% { transform: rotate(0deg); border-color: rgba(255,255,255,0.4); }
+      50% { border-color: rgba(255,255,255,0.6); }
+      100% { transform: rotate(360deg); border-color: rgba(255,255,255,0.4); }
+    }
+
+    /* Evenly spaced Chakra Positions (7 chakras, 8% to 65% of height - leaves room for controls) */
+#crown { top: 8%; background: linear-gradient(135deg, #4B0082, #8B00FF); --chakra-color: #8B00FF; }
+#third-eye { top: 18%; background: linear-gradient(135deg, #191970, #4B0082); --chakra-color: #4B0082; }
+#throat { top: 28%; background: linear-gradient(135deg, #0000CD, #00BFFF); --chakra-color: #00BFFF; }
+#heart { top: 38%; background: linear-gradient(135deg, #008000, #00FF00); --chakra-color: #00FF00; }
+#solar-plexus { top: 48%; background: linear-gradient(135deg, #FFD700, #FFFF00); --chakra-color: #FFFF00; }
+#sacral { top: 58%; background: linear-gradient(135deg, #FF4500, #FF8C00); --chakra-color: #FF8C00; }
+#root { top: 68%; background: linear-gradient(135deg, #8B0000, #FF0000); --chakra-color: #FF0000; }
+
+    /* Desktop/Horizontal: scale buttons and add spacing */
+    @media (min-width: 768px) and (min-height: 500px) {
+      .chakra-btn {
+        width: clamp(60px, 8vw, 90px);
+        height: clamp(60px, 8vw, 90px);
+        font-size: clamp(0.6em, 1.2vw, 0.8em);
+      }
+      .chakra-btn .freq { font-size: clamp(0.8em, 2vw, 1em); margin-top: 4px; }
+    }
+
+    /* Wide screens: reduce spacing to prevent overlap */
+    @media (max-height: 700px) and (min-width: 600px) {
+      #crown { top: 8%; }
+      #third-eye { top: 18%; }
+      #throat { top: 28%; }
+      #heart { top: 38%; }
+      #solar-plexus { top: 48%; }
+      #sacral { top: 58%; }
+      #root { top: 68%; }
+      .chakra-btn {
+        width: clamp(50px, 7vw, 80px);
+        height: clamp(50px, 7vw, 80px);
+      }
+    }
+
+/* Default: info panel on right, vertically centered */
+#chakra-info {
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Wide desktop: horizontal layout (Option C - no height restriction) */
+@media (min-width: 1024px) {
+  #chakra-row {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row-reverse;
+    gap: clamp(15px, 2.5vw, 30px);
+    z-index: 10;
+  }
+  .chakra-btn {
+    position: relative;
+    left: auto;
+    transform: none;
+    top: auto !important;
+    width: clamp(70px, 7vw, 100px);
+    height: clamp(70px, 7vw, 100px);
+  }
+
+  .chakra-btn .freq { font-size: clamp(0.8em, 1.8vw, 1.1em); margin-top: 6px; }
+  .chakra-btn .symbol { font-size: clamp(1.2em, 3vw, 2em); }
+  #chakra-info {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
+}
+
+/* Portrait mode (including mobile): shift chakras left, description on right */
+@media (max-width: 1023px) {
+  .chakra-btn {
+    left: 30%;
+  }
+  #chakra-info {
+    right: 3%;
+    left: auto;
+    width: 280px;
+  }
+}
+
+/* Mobile: chakra button sizes and spacing */
+@media (max-width: 480px) {
+  .chakra-btn {
+    width: clamp(55px, 11vw, 75px);
+    height: clamp(55px, 11vw, 75px);
+    font-size: clamp(0.65em, 1.6vw, 0.85em);
+  }
+  .chakra-btn .freq { font-size: clamp(0.75em, 2.2vw, 0.95em); margin-top: 3px; }
+  .chakra-btn .symbol { font-size: clamp(0.9em, 1.8vw, 1.3em); }
+  #crown { top: 4%; }
+  #third-eye { top: 12.5%; }
+  #throat { top: 21%; }
+  #heart { top: 29.5%; }
+  #solar-plexus { top: 38%; }
+  #sacral { top: 46.5%; }
+  #root { top: 55%; }
+}
+
+@media (max-width: 360px) {
+  .chakra-btn {
+    width: clamp(50px, 10vw, 65px);
+    height: clamp(50px, 10vw, 65px);
+  }
+}
+
+    /* Reset hover for horizontal layout */
+    @media (min-width: 1024px) {
+      .chakra-btn:hover { transform: scale(1.05); }
+      .chakra-btn.active {
+        animation: chakraPulseHorizontal 2s ease-in-out infinite;
+      }
+    }
+
+    @keyframes chakraPulseHorizontal {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    /* Wide desktop portrait: smaller buttons to prevent overlap */
+    @media (min-width: 1200px) and (min-height: 700px) {
+      .chakra-btn {
+        width: clamp(50px, 5vw, 75px);
+        height: clamp(50px, 5vw, 75px);
+        font-size: clamp(0.6em, 1vw, 0.8em);
+      }
+      .chakra-btn .freq { font-size: clamp(0.8em, 1.5vw, 1em); margin-top: 3px; }
+      .chakra-btn .symbol { font-size: clamp(0.9em, 1.8vw, 1.2em); }
+    }
+
+/* Bottom Controls - Two-group layout */
+#controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-height: 56px;
+  background: linear-gradient(to top, rgba(10,10,10,0.98), rgba(10,10,10,0.85));
+  border-top: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  z-index: 50;
+}
+
+/* Left group: selects + journey */
+#controls-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* Right group: readouts + action buttons */
+#controls-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Shared select/button base */
+#controls select, #controls button {
+  height: 34px;
+  padding: 0 10px;
+  font-size: 0.8em;
+  letter-spacing: 0.03em;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(30, 10, 45, 0.8);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  white-space: nowrap;
+}
+#controls select { transition: background 0.2s ease, border-color 0.2s ease; }
+#controls button { transition: all 0.2s ease; }
+#controls select option { background: #1a0523; color: white; }
+#controls select:hover, #controls button:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
+}
+#controls button:hover { transform: translateY(-1px); }
+#controls button:active { transform: translateY(0); }
+
+/* Select arrow styling */
+#controls select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='white' d='M5 6L1 2h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+}
+
+/* Binaural select — compact */
+#binaural-select { min-width: clamp(110px, 12vw, 180px); font-size: 0.75em; }
+
+/* Preset select — compact */
+#preset-select { min-width: clamp(90px, 10vw, 140px); }
+
+/* Journey duration inline */
+.journey-duration-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.journey-duration-wrap label {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75em;
+  white-space: nowrap;
+}
+#journey-duration-select {
+  height: 34px;
+  width: 64px;
+  padding: 0 6px;
+  padding-right: 20px;
+  font-size: 0.78em;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(30, 10, 45, 0.8);
+  color: white;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='white' d='M5 6L1 2h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  cursor: pointer;
+}
+#journey-duration-select option { background: #1a0523; color: white; }
+
+/* Journey button */
+#journey-btn { padding: 0 10px; font-size: 0.78em; }
+
+/* Readouts group */
+.readouts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+#progress-indicator {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75em;
+  text-align: center;
+  white-space: nowrap;
+}
+#progress-indicator #active-count {
+  color: #a855f7;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+#journey-timer {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  display: none;
+}
+#journey-timer.visible { display: block; }
+
+/* Volume */
+.volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8em;
+}
+.volume-wrap input[type="range"] {
+  width: clamp(50px, 6vw, 80px);
+  accent-color: #8b00ff;
+  cursor: pointer;
+}
+
+/* Icon-only action buttons */
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
+  font-size: 1.05em !important;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+#stop-all-btn {
+  border-color: rgba(200,0,0,0.4) !important;
+  background: rgba(120,0,0,0.4) !important;
+}
+#stop-all-btn:hover { background: rgba(180,0,0,0.6) !important; border-color: rgba(255,50,50,0.6) !important; }
+#fade-all-btn {
+  border-color: rgba(160,80,0,0.4) !important;
+  background: rgba(100,50,0,0.4) !important;
+}
+#fade-all-btn:hover { background: rgba(180,90,0,0.6) !important; border-color: rgba(255,130,0,0.6) !important; }
+#breathing-btn.active { background: rgba(0,150,75,0.3) !important; border-color: rgba(0,150,75,0.5) !important; }
+
+/* Mobile: stack into two rows */
+@media (max-width: 480px) {
+  #controls {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    gap: 10px;
+  }
+  #controls-left, #controls-right {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #controls-right {
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .readouts {
+    border: none;
+    padding: 0;
+  }
+  #binaural-select { flex: 1; min-width: 140px; }
+  #preset-select { flex: 1; min-width: 110px; }
+  .volume-wrap input[type="range"] { width: 70px; }
+}
+
+@media (max-width: 360px) {
+  #controls select, #controls button {
+    height: 32px;
+    font-size: 0.75em;
+  }
+  #binaural-select { min-width: 120px; }
+  #preset-select { min-width: 100px; }
+}
+/* Help Overlay */
+#help-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 2000;
+  color: white;
+  padding: 40px;
+  overflow-y: auto;
+}
+#help-overlay.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#help-overlay h2 { margin-bottom: 30px; font-size: 2em; }
+#help-overlay .shortcuts { max-width: 500px; width: 100%; }
+#help-overlay .shortcut-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 1.1em; }
+#help-overlay .key { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 6px; font-family: monospace; }
+#help-overlay .close-btn { margin-top: 30px; padding: 12px 30px; background: #8b00ff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1em; }
+#help-overlay .close-btn:hover { background: #aa33ff; }
+
+/* Top Overlay (game-style) */
+#top-overlay {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1100;
+}
+#top-overlay button {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  color: white;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+#top-overlay button:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+#top-overlay #help-btn { font-weight: 600; letter-spacing: 0.05em; }
+#top-overlay #fullscreen-btn svg { display: block; }
+#top-overlay #fullscreen-btn .exit-icon { display: none; }
+#top-overlay #fullscreen-btn.is-fullscreen .enter-icon { display: none; }
+#top-overlay #fullscreen-btn.is-fullscreen .exit-icon { display: block; }
+
+/* Breathing Guide Overlay */
+#breathing-guide {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(280px, 70vw);
+  height: min(280px, 70vw);
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  cursor: default;
+  z-index: 1200;
+  display: none;
+  animation: breathe 8s ease-in-out infinite;
+}
+#breathing-guide.active { display: block; }
+#breathing-guide .text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: clamp(1em, 2.5vw, 1.2em);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  cursor: default;
+  opacity: 0;
+  animation: breatheText 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; border-color: rgba(255, 255, 255, 0.3); }
+  25% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; border-color: rgba(0, 255, 255, 0.6); }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; border-color: rgba(0, 255, 255, 0.6); }
+  75% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; border-color: rgba(255, 255, 255, 0.3); }
+}
+
+@keyframes breatheText {
+  0%, 100% { opacity: 0; }
+  12% { opacity: 1; }
+  25% { opacity: 1; }
+  37% { opacity: 0; }
+  50% { opacity: 0; }
+  62% { opacity: 1; }
+  75% { opacity: 1; }
+  87% { opacity: 0; }
+}
+
+/* Breathing text - controlled by JS */
+
+    /* Volume Control */
+    .volume-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+/* Progress Indicator */
+#progress-indicator {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.78em;
+  text-align: center;
+  white-space: nowrap;
+}
+#progress-indicator #active-count {
+  color: #a855f7;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* Energy Line Flow Animation */
+@keyframes energyFlow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -40; }
+}
+
+/* Active chakra button text adjustment */
+.chakra-btn.active .freq {
+  font-size: clamp(0.75em, 2.2vw, 1.1em);
+}
+
+/* Energy line transitions */
+#energy-line {
+  transition: stroke 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
+}
+
+/* Notification Toast */
+#notification-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: rgba(80, 0, 160, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(180, 100, 255, 0.25);
+  color: rgba(255,255,255,0.92);
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+  z-index: 3000;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+#notification-toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Journey Countdown Timer */
+    #journey-timer {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.85em;
+      font-variant-numeric: tabular-nums;
+      min-width: 70px;
+      text-align: center;
+      display: none;
+    }
+    #journey-timer.visible { display: block; }
+
+    /* Stationary Chakra Info Panel */
+    #chakra-info {
+      display: none;
+      position: absolute;
+      width: min(280px, 90vw);
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(10,10,10,0.95), rgba(26,5,51,0.95));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      color: white;
+      font-size: 0.85em;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #chakra-info.visible {
+      display: block;
+      opacity: 1;
+    }
+    #chakra-info.pinned {
+      pointer-events: auto;
+    }
+    #info-dismiss-btn {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 0.85em;
+      line-height: 1;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+    #chakra-info.pinned #info-dismiss-btn {
+      display: flex;
+    }
+    #info-dismiss-btn:hover { background: rgba(255,255,255,0.25); }
+    #info-name {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 1.05em;
+      background: linear-gradient(90deg, var(--current-chakra-color, #8b00ff), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    #info-freq { opacity: 0.8; margin-bottom: 6px; }
+    #info-desc { opacity: 0.7; line-height: 1.4; font-size: 0.85em; }
+
+    /* Chakra button refinements */
+    .chakra-btn {
+      will-change: transform;
+    }
+    .chakra-btn:hover {
+      filter: brightness(1.15);
+    }
+  </style>
+</head>
+<body>
+  <!-- Launch Screen -->
+  <div id="launch-screen">
+
+    <!-- Sacred geometry mandala (CSS-animated SVG) -->
+    <svg id="launch-mandala" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="white" stroke-width="0.8">
+      <!-- Outermost static ring: Flower of Life circles -->
+      <g class="ring-1">
+        <circle cx="200" cy="200" r="120"/>
+        <circle cx="200" cy="80"  r="120"/>
+        <circle cx="200" cy="320" r="120"/>
+        <circle cx="96"  cy="140" r="120"/>
+        <circle cx="304" cy="140" r="120"/>
+        <circle cx="96"  cy="260" r="120"/>
+        <circle cx="304" cy="260" r="120"/>
+      </g>
+      <!-- Middle ring: 12-pointed star polygon -->
+      <g class="ring-2">
+        <polygon points="200,60 215,155 310,140 230,195 280,275 200,230 120,275 170,195 90,140 185,155" stroke-width="0.6"/>
+        <circle cx="200" cy="200" r="80" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="95" stroke-width="0.4" stroke-dasharray="4 8"/>
+      </g>
+      <!-- Inner ring: Sri Yantra–inspired triangles + seed circle -->
+      <g class="ring-3">
+        <polygon points="200,120 268,230 132,230" stroke-width="1"/>
+        <polygon points="200,280 132,170 268,170" stroke-width="1"/>
+        <circle cx="200" cy="200" r="44" stroke-width="0.7"/>
+        <circle cx="200" cy="200" r="22" stroke-width="0.5"/>
+        <circle cx="200" cy="200" r="6"  stroke-width="0.8"/>
+      </g>
+      <!-- Outermost boundary circle -->
+      <circle cx="200" cy="200" r="190" stroke-width="0.4" stroke-dasharray="2 6"/>
+    </svg>
+
+    <!-- Text content -->
+    <div id="launch-content">
+      <h1>Cosmic Vibes Chakra Alignment</h1>
+      <div class="headphone-note">🎧 Headphones recommended for binaural beats</div>
+      <div class="tap-instruction">Tap anywhere to begin</div>
+    </div>
+
+  </div>
+
+  <!-- Main App -->
+  <div id="app-container">
+
+
+<!-- Breathing Guide -->
+<div id="breathing-guide">
+  <div class="text" id="breathing-text">Inhale</div>
+</div>
+
+<!-- Top Overlay (game-style UI buttons) -->
+<div id="top-overlay">
+  <button id="help-btn" title="Keyboard Shortcuts (?)">?</button>
+  <button id="fullscreen-btn" title="Toggle Fullscreen">
+    <!-- Enter Fullscreen Icon -->
+    <svg class="enter-icon" viewBox="0 0 24 24" width="28" height="28">
+      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="white"/>
+    </svg>
+    <!-- Exit Fullscreen Icon -->
+    <svg class="exit-icon" viewBox="0 0 24 24" width="28" height="28">
+      <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" fill="white"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Notification Toast -->
+<div id="notification-toast"></div>
+
+<!-- Help Overlay -->
+<div id="help-overlay">
+  <h2>Keyboard Shortcuts</h2>
+  <div class="shortcuts">
+    <div class="shortcut-row"><span>Toggle Chakras</span><span class="key">1-7</span></div>
+    <div class="shortcut-row"><span>Stop All</span><span class="key">Space</span></div>
+    <div class="shortcut-row"><span>Fullscreen</span><span class="key">F</span></div>
+    <div class="shortcut-row"><span>Breathing Guide</span><span class="key">B</span></div>
+    <div class="shortcut-row"><span>Help</span><span class="key">?</span></div>
+  </div>
+  <button class="close-btn" onclick="document.getElementById('help-overlay').classList.remove('active')">Close</button>
+</div>
+
+<!-- Stationary Chakra Info Panel -->
+<div id="chakra-info">
+  <button id="info-dismiss-btn" title="Dismiss">✕</button>
+  <div id="info-name"></div>
+  <div id="info-freq"></div>
+  <div id="info-desc"></div>
+</div>
+
+<!-- Chakra Buttons -->
+<div id="chakra-row">
+    <div class="chakra-btn" id="crown" data-index="6">
+      <div class="symbol"></div>
+      <div class="name">Crown</div>
+      <div class="freq">963 Hz</div>
+    </div>
+    <div class="chakra-btn" id="third-eye" data-index="5">
+      <div class="symbol"></div>
+      <div class="name">Third Eye</div>
+      <div class="freq">852 Hz</div>
+    </div>
+    <div class="chakra-btn" id="throat" data-index="4">
+      <div class="symbol"></div>
+      <div class="name">Throat</div>
+      <div class="freq">741 Hz</div>
+    </div>
+    <div class="chakra-btn" id="heart" data-index="3">
+      <div class="symbol"></div>
+      <div class="name">Heart</div>
+      <div class="freq">639 Hz</div>
+    </div>
+    <div class="chakra-btn" id="solar-plexus" data-index="2">
+      <div class="symbol"></div>
+      <div class="name">Solar Plexus</div>
+      <div class="freq">528 Hz</div>
+    </div>
+    <div class="chakra-btn" id="sacral" data-index="1">
+      <div class="symbol"></div>
+      <div class="name">Sacral</div>
+      <div class="freq">417 Hz</div>
+    </div>
+    <div class="chakra-btn" id="root" data-index="0">
+      <div class="symbol"></div>
+      <div class="name">Root</div>
+      <div class="freq">396 Hz</div>
+    </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div id="controls">
+
+      <!-- Left: selects + journey -->
+      <div id="controls-left">
+        <select id="binaural-select">
+          <option value="off">Binaural: Off</option>
+          <option value="delta">Delta (2Hz) — Deep sleep, healing</option>
+          <option value="theta">Theta (6Hz) — Deep meditation</option>
+          <option value="alpha">Alpha (10Hz) — Calm alertness</option>
+          <option value="beta">Beta (20Hz) — Focus, cognition</option>
+          <option value="gamma">Gamma (40Hz) — Peak insight</option>
+        </select>
+        <select id="preset-select" title="Chakra Presets">
+          <option value="">Presets…</option>
+          <option value="holy-trinity">Holy Trinity</option>
+          <option value="creative-bridge">Creative Bridge</option>
+          <option value="intuitive-heart">Intuitive Heart</option>
+          <option value="physical-restoration">Physical Restoration</option>
+          <option value="mental-detox">Mental Detox</option>
+          <option value="lower-triangle">Lower Triangle</option>
+          <option value="upper-triangle">Upper Triangle</option>
+          <option value="middle-bridge">Middle Bridge</option>
+          <option value="full-ascension">Full Ascension</option>
+        </select>
+        <div class="journey-duration-wrap">
+          <select id="journey-duration-select" title="Journey Duration">
+            <option value="5" selected>5 min</option>
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="45">45 min</option>
+            <option value="60">60 min</option>
+            <option value="90">90 min</option>
+          </select>
+        </div>
+        <button id="journey-btn" title="Start Chakra Journey">🧘 Journey</button>
+        <div id="journey-timer"></div>
+      </div>
+
+      <!-- Right: readouts + actions -->
+      <div id="controls-right">
+        <div class="volume-wrap">
+          <span>🔊</span>
+          <input type="range" id="volume-slider" min="0" max="100" value="50" title="Volume">
+        </div>
+        <div class="readouts">
+          <div id="progress-indicator"><span id="active-count">0</span>/7</div>
+        </div>
+        <button id="breathing-btn" class="icon-btn" title="Toggle Breathing Guide">🌬️</button>
+        <button id="fade-all-btn" class="icon-btn" title="Fade Out All (10s)">🌅</button>
+        <button id="stop-all-btn" class="icon-btn" title="Stop All">⏹</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+// Core Variables
+    let audioContext = null;
+    const frequencies = [396, 417, 528, 639, 741, 852, 963];
+    let activeChakras = Array(7).fill(null);
+    let binauralMode = 'off';
+     let isFallbackFullscreen = false;
+     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+     let masterVolume = 0.5;
+    let audioContextCreationTime = Date.now();
+
+    // iOS Audio Session: Set to 'playback' to bypass mute switch (works in PWA mode only)
+    if (isIOS && navigator.audioSession) {
+      navigator.audioSession.type = 'playback';
+    }
+
+    // iOS Audio Recovery: Handle backgrounding/sleep
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        // Page became visible again (returned from background)
+        if (audioContext) {
+          if (audioContext.state === 'suspended') {
+            audioContext.resume().catch(() => {
+              // If resume fails, recreate the context
+              recreateAudioContext();
+            });
+          } else if (audioContext.state === 'running') {
+            // Check for zombie context (running but silent)
+            const before = audioContext.currentTime;
+            setTimeout(() => {
+              if (audioContext && audioContext.currentTime === before) {
+                recreateAudioContext();
+              }
+            }, 200);
+          }
+        }
+      }
+    }
+
+    function recreateAudioContext() {
+      if (audioContext) {
+        audioContext.close().catch(() => {});
+        audioContext = null;
+        // Recreate on next user interaction
+        showNotification('Tap to restore audio');
+      }
+    }
+
+    function showNotification(message) {
+      const toast = document.getElementById('notification-toast');
+      if (toast) {
+        toast.textContent = message;
+        toast.classList.add('visible');
+        setTimeout(() => toast.classList.remove('visible'), 3000);
+      }
+    }
+
+    // Add event listeners for iOS audio recovery
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        // Page restored from bfcache
+        if (audioContext) {
+          recreateAudioContext();
+        }
+      }
+    });
+
+// DOM Elements
+const launchScreen = document.getElementById('launch-screen');
+const appContainer = document.getElementById('app-container');
+const binauralSelect = document.getElementById('binaural-select');
+     const fullscreenBtn = document.getElementById('fullscreen-btn');
+     if (isIOS) {
+       fullscreenBtn.style.display = 'none';
+       const fsShortcut = document.querySelector('.shortcut-row:nth-child(3)');
+       if (fsShortcut) fsShortcut.style.display = 'none';
+     }
+     const stopAllBtn = document.getElementById('stop-all-btn');
+const breathingBtn = document.getElementById('breathing-btn');
+const breathingGuide = document.getElementById('breathing-guide');
+const breathingText = document.getElementById('breathing-text');
+const chakraBtns = document.querySelectorAll('.chakra-btn');
+const volumeSlider = document.getElementById('volume-slider');
+const energyLine = document.getElementById('energy-line');
+const activeCountEl = document.getElementById('active-count');
+const presetSelect = document.getElementById('preset-select');
+
+// Preset System
+const presets = {
+  grounding: [0],
+  creative: [1],
+  confidence: [2],
+  heart: [3],
+  expression: [4],
+  intuition: [5],
+  spiritual: [6],
+  'holy-trinity': [0, 2, 6],
+  'creative-bridge': [1, 4],
+  'intuitive-heart': [3, 5],
+  'physical-restoration': [0, 2, 6],
+  'mental-detox': [1, 4, 5],
+  'lower-triangle': [0, 1, 2],
+  'upper-triangle': [4, 5, 6],
+  'middle-bridge': [3],
+  'full-ascension': [0, 1, 2, 3, 4, 5, 6]
+};
+
+const presetDescriptions = {
+  'holy-trinity': 'A total alignment suite linking your physical foundation, cellular transformation, and divine connection.',
+  'creative-bridge': 'Connects the center of creation with the center of expression to help vocalize and manifest artistic ideas.',
+  'intuitive-heart': 'Harmonizes emotional empathy with spiritual "clear-seeing" to ensure insights are grounded in compassion.',
+  'physical-restoration': 'A "Cellular Suite" designed for deep pain relief, tissue blueprinting, and restorative DNA repair.',
+  'mental-detox': 'Clears the subconscious of emotional toxins and mental fog to facilitate problem-solving and clarity.',
+  'lower-triangle': 'The Physicality Suite: Stabilizes the body, survival instincts, and personal power centers.',
+  'upper-triangle': 'The Spirituality Suite: Opens the higher mind for expanded communication, intuition, and Source connection.',
+  'middle-bridge': 'The Heart Center: Acts as the standalone balancing point that integrates the physical and spiritual realms.',
+  'full-ascension': 'A systematic "sweep" through the entire system to clear and re-energize every primary energy center.'
+};
+
+function getPresetFrequencies(preset) {
+  const freqMap = {
+    'holy-trinity': '396 + 528 + 963 Hz',
+    'creative-bridge': '417 + 741 Hz',
+    'intuitive-heart': '639 + 852 Hz',
+    'physical-restoration': '174 + 285 + 528 Hz',
+    'mental-detox': '417 + 741 + 852 Hz',
+    'lower-triangle': '396 + 417 + 528 Hz',
+    'upper-triangle': '741 + 852 + 963 Hz',
+    'middle-bridge': '639 Hz',
+    'full-ascension': 'Sequential 396→963 Hz'
+  };
+  return freqMap[preset] || '';
+}
+
+presetSelect.addEventListener('change', (e) => {
+  const preset = e.target.value;
+  if (!preset) return;
+  // Stop all first
+  stopAllChakras();
+
+  // Show preset description in info panel
+  const infoName = document.getElementById('info-name');
+  const infoFreq = document.getElementById('info-freq');
+  const infoDesc = document.getElementById('info-desc');
+  const chakraInfo = document.getElementById('chakra-info');
+
+  infoName.textContent = e.target.options[e.target.selectedIndex].text;
+  infoFreq.textContent = getPresetFrequencies(preset);
+  infoDesc.textContent = presetDescriptions[preset] || '';
+  presetInfoPinned = true;
+  chakraInfo.classList.add('visible');
+  chakraInfo.classList.add('pinned');
+
+  // Activate preset chakras after a brief delay
+  setTimeout(() => {
+    if (presets[preset]) {
+      presets[preset].forEach(index => startChakra(index));
+    }
+    presetSelect.value = '';
+  }, 600);
+});
+
+// Help Button
+const helpBtn = document.getElementById('help-btn');
+helpBtn.addEventListener('click', () => {
+  document.getElementById('help-overlay').classList.toggle('active');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === '?' || e.key === '/') {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') {
+      e.preventDefault();
+      document.getElementById('help-overlay').classList.toggle('active');
+    }
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('help-overlay').classList.remove('active');
+  }
+});
+
+// Breathing Guide Toggle
+let breathingActive = false;
+let breathingInterval = null;
+breathingBtn.addEventListener('click', () => {
+  breathingActive = !breathingActive;
+  breathingBtn.classList.toggle('active', breathingActive);
+  breathingGuide.classList.toggle('active', breathingActive);
+  if (breathingActive) {
+    startBreathingAnimation();
+  } else {
+    clearInterval(breathingInterval);
+    breathingInterval = null;
+  }
+});
+
+function startBreathingAnimation() {
+  const stages = ['Inhale', 'Hold', 'Exhale', 'Hold'];
+  let stageIndex = 0;
+  breathingText.textContent = stages[0];
+  breathingInterval = setInterval(() => {
+    stageIndex = (stageIndex + 1) % 4;
+    breathingText.textContent = stages[stageIndex];
+  }, 2000); // 2 seconds per stage (8s total cycle)
+}
+
+    // Volume Control
+    volumeSlider.addEventListener('input', (e) => {
+      masterVolume = e.target.value / 100;
+      activeChakras.forEach((chakra, index) => {
+        if (chakra) {
+          const targetGain = binauralMode === 'off' ? 0.3 : 0.15;
+          chakra.gains.forEach(gainNode => {
+            gainNode.gain.setValueAtTime(targetGain * masterVolume, audioContext.currentTime);
+          });
+        }
+      });
+    });
+
+    // Launch Screen: Init Audio on Tap
+    launchScreen.addEventListener('click', () => {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const resume = audioContext.state === 'suspended' ? audioContext.resume() : Promise.resolve();
+        resume.then(() => {
+          launchScreen.style.display = 'none';
+          appContainer.style.display = 'block';
+        }).catch(() => {
+          // Resume failed but proceed anyway
+          launchScreen.style.display = 'none';
+          appContainer.style.display = 'block';
+        });
+      } catch (e) {
+        // AudioContext creation failed — still show the app
+        launchScreen.style.display = 'none';
+        appContainer.style.display = 'block';
+      }
+    });
+
+    // Binaural Mode Change Handler
+    binauralSelect.addEventListener('change', (e) => {
+      binauralMode = e.target.value;
+      activeChakras.forEach((chakra, index) => {
+        if (chakra) {
+          stopChakra(index);
+          startChakra(index);
+        }
+      });
+    });
+
+    // Fullscreen Toggle (with iframe fallback for itch.io embedding)
+    fullscreenBtn.addEventListener('click', () => {
+      // If in fallback fullscreen mode, exit it
+      if (isFallbackFullscreen) {
+        appContainer.style.width = '';
+        appContainer.style.height = '';
+        appContainer.style.maxWidth = '';
+        appContainer.style.maxHeight = '';
+        fullscreenBtn.classList.remove('is-fullscreen');
+        isFallbackFullscreen = false;
+        return;
+      }
+
+      // If in real fullscreen, exit it
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+        return;
+      }
+
+      // Enter fullscreen (try real first, fallback to CSS maximize)
+      const elem = appContainer;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {
+          // Fallback: maximize within container if fullscreen blocked (e.g., iframe)
+          elem.style.width = '100vw';
+          elem.style.height = '100vh';
+          elem.style.maxWidth = 'none';
+          elem.style.maxHeight = 'none';
+          fullscreenBtn.classList.add('is-fullscreen');
+          isFallbackFullscreen = true;
+        });
+      } else {
+        // Fallback for older browsers or iframe contexts
+        elem.style.width = '100vw';
+        elem.style.height = '100vh';
+        elem.style.maxWidth = 'none';
+        elem.style.maxHeight = 'none';
+        fullscreenBtn.classList.add('is-fullscreen');
+        isFallbackFullscreen = true;
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        // Reset to original constraints when exiting real fullscreen
+        appContainer.style.width = '';
+        appContainer.style.height = '';
+        appContainer.style.maxWidth = '';
+        appContainer.style.maxHeight = '';
+        isFallbackFullscreen = false;
+      }
+      // Toggle icon based on fullscreen state
+      fullscreenBtn.classList.toggle('is-fullscreen', !!document.fullscreenElement || isFallbackFullscreen);
+    });
+
+    // Stop All
+    stopAllBtn.addEventListener('click', stopAllChakras);
+
+// Chakra Button Click Handlers
+chakraBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const index = parseInt(btn.dataset.index);
+    if (activeChakras[index]) {
+      stopChakra(index);
+    } else {
+      startChakra(index);
+    }
+  });
+});
+
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  const key = e.key.toLowerCase();
+  // Number keys 1-7 toggle chakras (1=Root, 7=Crown)
+  if (key >= '1' && key <= '7') {
+    const index = parseInt(key) - 1;
+    if (activeChakras[index]) {
+      stopChakra(index);
+    } else {
+      startChakra(index);
+    }
+  }
+  // Space to stop all
+  if (e.code === 'Space') {
+    e.preventDefault();
+    stopAllChakras();
+  }
+  // F for fullscreen
+  if (key === 'f') {
+    fullscreenBtn.click();
+  }
+  // B for breathing guide
+  if (key === 'b') {
+    breathingBtn.click();
+  }
+});
+
+// Chakra Descriptions for Tooltip
+const chakraDescriptions = [
+  { name: 'Root Chakra (Muladhara)', desc: 'Located at the base of the spine. Governs stability, security, and survival instincts.' },
+  { name: 'Sacral Chakra (Svadhisthana)', desc: 'Located below the navel. Governs creativity, sexuality, and emotional balance.' },
+  { name: 'Solar Plexus Chakra (Manipura)', desc: 'Located at the upper abdomen. Governs personal power, confidence, and will.' },
+  { name: 'Heart Chakra (Anahata)', desc: 'Located at the center of the chest. Governs love, compassion, and emotional healing.' },
+  { name: 'Throat Chakra (Vishuddha)', desc: 'Located at the throat. Governs communication, self-expression, and truth.' },
+  { name: 'Third Eye Chakra (Ajna)', desc: 'Located between the eyebrows. Governs intuition, insight, and imagination.' },
+  { name: 'Crown Chakra (Sahasrara)', desc: 'Located at the top of the head. Governs spirituality, enlightenment, and universal connection.' }
+];
+
+// Chakra Info Panel Elements
+const chakraInfo = document.getElementById('chakra-info');
+const infoName = document.getElementById('info-name');
+const infoFreq = document.getElementById('info-freq');
+const infoDesc = document.getElementById('info-desc');
+
+// Track whether a preset description is pinned
+let presetInfoPinned = false;
+
+document.getElementById('info-dismiss-btn').addEventListener('click', () => {
+  presetInfoPinned = false;
+  const chakraInfo = document.getElementById('chakra-info');
+  chakraInfo.classList.remove('visible', 'pinned');
+});
+
+// Show info panel on hover (clears preset description)
+chakraBtns.forEach(btn => {
+  btn.addEventListener('mouseenter', () => {
+    if (presetInfoPinned) return;
+    const index = parseInt(btn.dataset.index);
+    const chakra = chakraDescriptions[index];
+    const chakraColor = getComputedStyle(btn).getPropertyValue('--chakra-color').trim() || '#8b00ff';
+    infoName.textContent = chakra.name;
+    infoFreq.textContent = `${frequencies[index]} Hz - ${index === 0 ? 'Grounding' : index === 1 ? 'Creativity' : index === 2 ? 'Power' : index === 3 ? 'Love' : index === 4 ? 'Expression' : index === 5 ? 'Intuition' : 'Spirituality'}`;
+    infoDesc.textContent = chakra.desc;
+    chakraInfo.style.setProperty('--current-chakra-color', chakraColor);
+
+    // Align info panel vertically with the chakra button (portrait mode only)
+    if (window.innerWidth <= 1023) {
+      const btnRect = btn.getBoundingClientRect();
+      const btnCenterY = btnRect.top + btnRect.height / 2;
+      chakraInfo.style.top = `${btnCenterY}px`;
+      chakraInfo.style.transform = 'translateY(-50%)';
+    }
+    chakraInfo.classList.add('visible');
+  });
+
+  btn.addEventListener('mouseleave', () => {
+    if (presetInfoPinned) return;
+    chakraInfo.classList.remove('visible');
+  });
+});
+
+// Create ripple effect on chakra activation
+function createRipple(btn) {
+  const chakraColor = getComputedStyle(btn).getPropertyValue('--chakra-color').trim() || 'rgba(255,255,255,0.6)';
+  const ripple = document.createElement('div');
+  ripple.style.cssText = `
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 2px solid ${chakraColor};
+    animation: rippleAnim 1s ease-out forwards;
+    pointer-events: none;
+    z-index: -1;
+  `;
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 1000);
+}
+
+// Create particle burst effect
+function createParticleBurst(btn) {
+  const chakraColor = getComputedStyle(btn).getPropertyValue('--chakra-color').trim() || '#ffffff';
+  const rect = btn.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  for (let i = 0; i < 8; i++) {
+    const particle = document.createElement('div');
+    const angle = (i / 8) * Math.PI * 2;
+    const distance = 40 + Math.random() * 20;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+    
+    particle.style.cssText = `
+      position: fixed;
+      left: ${centerX}px;
+      top: ${centerY}px;
+      width: 4px;
+      height: 4px;
+      background: ${chakraColor};
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      animation: particleFly 0.8s ease-out forwards;
+      --tx: ${tx}px;
+      --ty: ${ty}px;
+    `;
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 800);
+  }
+}
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+@keyframes rippleAnim {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+@keyframes particleFly {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0); opacity: 0; }
+}
+    `;
+    document.head.appendChild(style);
+
+    // Start Chakra Audio
+    function startChakra(index) {
+      if (!audioContext || activeChakras[index]) return;
+      if (audioContext.state === 'suspended') { audioContext.resume(); }
+      const baseFreq = frequencies[index];
+      const chakra = { oscillators: [], gains: [] };
+      const btn = document.querySelector(`.chakra-btn[data-index="${index}"]`);
+
+      if (binauralMode === 'off') {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        gain.gain.setValueAtTime(0, audioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0.3 * masterVolume, audioContext.currentTime + 0.5);
+        osc.start();
+        chakra.oscillators.push(osc);
+        chakra.gains.push(gain);
+      } else {
+        const beatFreq = {delta:2, theta:6, alpha:10, beta:20, gamma:40}[binauralMode] || 0;
+        // Left Channel
+        const leftOsc = audioContext.createOscillator();
+        const leftGain = audioContext.createGain();
+        const leftPanner = audioContext.createStereoPanner();
+        leftPanner.pan.value = -1;
+        leftOsc.type = 'sine';
+        leftOsc.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+        leftOsc.connect(leftGain);
+        leftGain.connect(leftPanner);
+        leftPanner.connect(audioContext.destination);
+        leftGain.gain.setValueAtTime(0, audioContext.currentTime);
+        leftGain.gain.linearRampToValueAtTime(0.15 * masterVolume, audioContext.currentTime + 0.5);
+        leftOsc.start();
+        // Right Channel
+        const rightOsc = audioContext.createOscillator();
+        const rightGain = audioContext.createGain();
+        const rightPanner = audioContext.createStereoPanner();
+        rightPanner.pan.value = 1;
+        rightOsc.type = 'sine';
+        rightOsc.frequency.setValueAtTime(baseFreq + beatFreq, audioContext.currentTime);
+        rightOsc.connect(rightGain);
+        rightGain.connect(rightPanner);
+        rightPanner.connect(audioContext.destination);
+        rightGain.gain.setValueAtTime(0, audioContext.currentTime);
+        rightGain.gain.linearRampToValueAtTime(0.15 * masterVolume, audioContext.currentTime + 0.5);
+        rightOsc.start();
+        // Store
+        chakra.oscillators.push(leftOsc, rightOsc);
+        chakra.gains.push(leftGain, rightGain);
+      }
+
+activeChakras[index] = chakra;
+btn.classList.add('active');
+btn.querySelector('.freq').textContent = `Stop ${baseFreq} Hz`;
+createRipple(btn);
+createParticleBurst(btn);
+updateEnergyLine();
+updateProgress();
+    }
+
+// Update Energy Line based on active chakras
+function updateEnergyLine() {
+  if (!energyLine) return;
+  const activeCount = activeChakras.filter(c => c !== null).length;
+  if (activeCount === 0) {
+    energyLine.style.stroke = 'rgba(255,255,255,0.15)';
+    energyLine.style.strokeWidth = '8';
+    energyLine.style.filter = 'none';
+    energyLine.style.animation = 'none';
+  } else {
+    const intensity = activeCount / 7;
+    // Dynamic color based on lowest and highest active chakra
+    const activeIndices = activeChakras.reduce((acc, chakra, idx) => chakra ? [...acc, idx] : acc, []);
+    if (activeIndices.length > 0) {
+      const lowestColor = getComputedStyle(document.querySelector(`.chakra-btn[data-index="${activeIndices[0]}"]`)).getPropertyValue('--chakra-color').trim();
+      const highestColor = getComputedStyle(document.querySelector(`.chakra-btn[data-index="${activeIndices[activeIndices.length - 1]}"]`)).getPropertyValue('--chakra-color').trim();
+      energyLine.style.stroke = `url(#energy-gradient)`;
+      updateEnergyGradient(lowestColor, highestColor);
+    }
+    energyLine.style.strokeWidth = 8 + intensity * 12;
+    energyLine.style.filter = `blur(${intensity * 3}px)`;
+    energyLine.style.animation = `energyFlow ${3 - intensity * 2}s linear infinite`;
+  }
+}
+
+function updateEnergyGradient(lowColor, highColor) {
+  const gradient = document.getElementById('energy-gradient');
+  if (gradient) {
+    const stops = gradient.querySelectorAll('stop');
+    if (stops[0]) stops[0].style.stopColor = highColor;
+    if (stops[1]) stops[1].style.stopColor = lowColor;
+  }
+}
+
+    // Stop Chakra Audio with fade out
+    function stopChakra(index) {
+      const chakra = activeChakras[index];
+      if (!chakra || !audioContext) return;
+
+      // Clear active state immediately to prevent re-triggering
+      activeChakras[index] = null;
+
+      const now = audioContext.currentTime;
+      const fadeTime = 0.5; // Match fade-in duration
+
+      // Fade out all gain nodes
+      chakra.gains.forEach(gainNode => {
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+        gainNode.gain.linearRampToValueAtTime(0, now + fadeTime);
+      });
+
+      // Stop oscillators after fade completes
+      chakra.oscillators.forEach(osc => {
+        osc.stop(now + fadeTime + 0.01);
+      });
+
+      // Update UI immediately
+      const btn = document.querySelector(`.chakra-btn[data-index="${index}"]`);
+      btn.classList.remove('active');
+      btn.querySelector('.freq').textContent = `${frequencies[index]} Hz`;
+      updateEnergyLine();
+      updateProgress();
+    }
+
+    // Update progress indicator
+    function updateProgress() {
+      const activeCount = activeChakras.filter(c => c !== null).length;
+      activeCountEl.textContent = activeCount;
+    }
+
+// Stop All Chakras
+function stopAllChakras() {
+  activeChakras.forEach((_, index) => stopChakra(index));
+}
+
+// Fade Out All Chakras (gentle 10s fade)
+function fadeOutAllChakras() {
+  const now = audioContext.currentTime;
+  activeChakras.forEach((chakra, index) => {
+    if (!chakra) return;
+    chakra.gains.forEach(gainNode => {
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      gainNode.gain.linearRampToValueAtTime(0, now + 10);
+    });
+    // Mark as inactive after fade
+    setTimeout(() => {
+      if (activeChakras[index]) {
+        activeChakras[index].oscillators.forEach(osc => osc.stop());
+        activeChakras[index] = null;
+        const btn = document.querySelector(`.chakra-btn[data-index="${index}"]`);
+        btn.classList.remove('active');
+        btn.querySelector('.freq').textContent = `${frequencies[index]} Hz`;
+        updateEnergyLine();
+        updateProgress();
+      }
+    }, 10100);
+  });
+  // Update UI immediately
+  activeChakras.forEach((chakra, index) => {
+    if (chakra) {
+      const btn = document.querySelector(`.chakra-btn[data-index="${index}"]`);
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// Connect fade button
+document.getElementById('fade-all-btn').addEventListener('click', fadeOutAllChakras);
+
+// Journey Mode - Sequentially activate chakras
+let journeyActive = false;
+let journeyTimeout = null;
+let journeyCountdownInterval = null;
+let journeyRemainingSeconds = 0;
+const journeyBtn = document.getElementById('journey-btn');
+const journeyTimerEl = document.getElementById('journey-timer');
+const journeyDurationSelect = document.getElementById('journey-duration-select');
+
+// Get total journey duration in ms
+function getJourneyTotalMs() {
+  const value = journeyDurationSelect.value;
+  return parseInt(value) * 60 * 1000;
+}
+
+// Calculate per-chakra delay (even steven)
+function getJourneyDelay() {
+  const totalMs = getJourneyTotalMs();
+  const perChakraMs = totalMs / 7;
+  if (perChakraMs < 1000) {
+    showNotification('Minimum 7 seconds total (1s per chakra)');
+    return 1000;
+  }
+  return perChakraMs;
+}
+
+// Update journey countdown display
+function updateJourneyCountdown() {
+  if (!journeyActive) return;
+  const mins = String(Math.floor(journeyRemainingSeconds / 60)).padStart(2, '0');
+  const secs = String(journeyRemainingSeconds % 60).padStart(2, '0');
+  journeyTimerEl.textContent = `${mins}:${secs}`;
+  if (journeyRemainingSeconds > 0) {
+    journeyRemainingSeconds--;
+  }
+}
+
+journeyBtn.addEventListener('click', () => {
+  if (journeyActive) {
+    // Stop journey
+    journeyActive = false;
+    clearTimeout(journeyTimeout);
+    clearInterval(journeyCountdownInterval);
+    journeyBtn.textContent = '🧘 Journey';
+    journeyBtn.style.background = ''; // reset to default
+    journeyTimerEl.classList.remove('visible');
+    journeyTimerEl.textContent = '00:00';
+    showNotification('Journey stopped');
+    return;
+  }
+
+  const totalMs = getJourneyTotalMs();
+  const perChakraMs = totalMs / 7;
+  const perChakraSec = Math.round(perChakraMs / 1000);
+
+  journeyActive = true;
+  journeyRemainingSeconds = Math.round(totalMs / 1000);
+  journeyBtn.textContent = '⏹ Stop Journey';
+  journeyBtn.style.background = 'rgba(200, 0, 0, 0.4)';
+  journeyTimerEl.classList.add('visible');
+  updateJourneyCountdown();
+  journeyCountdownInterval = setInterval(updateJourneyCountdown, 1000);
+  showNotification(`Starting Journey - ${perChakraSec}s per chakra`);
+
+  // Stop all first
+  stopAllChakras();
+
+  // Activate chakras sequentially (Root to Crown = 0 to 6)
+  let currentIndex = 0;
+
+  function activateNext() {
+    if (!journeyActive) return;
+
+    if (currentIndex > 0) {
+      stopChakra(currentIndex - 1);
+    }
+
+    if (currentIndex < 7) {
+      startChakra(currentIndex);
+      currentIndex++;
+      journeyTimeout = setTimeout(activateNext, perChakraMs);
+    } else {
+      // Journey complete - stop last chakra after delay
+      journeyTimeout = setTimeout(() => {
+        if (journeyActive) stopChakra(6);
+        journeyActive = false;
+        clearInterval(journeyCountdownInterval);
+        journeyBtn.textContent = '🧘 Journey';
+        journeyBtn.style.background = '';
+        journeyTimerEl.classList.remove('visible');
+        journeyTimerEl.textContent = '00:00';
+        showNotification('Journey complete!');
+      }, perChakraMs);
+    }
+  }
+
+  setTimeout(activateNext, 500);
+});
+  </script>
+</body>
+</html>
