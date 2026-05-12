@@ -13,6 +13,9 @@
   <meta property="og:type" content="website">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧘</text></svg>">
   <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {
     "@context": "http://schema.org",
@@ -27,7 +30,7 @@
   </script>
   <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
     /* Launch Screen */
     #launch-screen {
@@ -48,6 +51,12 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       cursor: pointer;
       animation: launchPulse 4s ease-in-out infinite;
       overflow: hidden;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #launch-screen.exiting {
+      opacity: 0;
+      transform: scale(1.08);
+      pointer-events: none;
     }
     @keyframes launchPulse {
       0%, 100% { background: radial-gradient(ellipse at 50% 50%, #1a0533 0%, #0a0a0a 70%); }
@@ -84,6 +93,8 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
     }
 
     #launch-screen h1 {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
       font-size: clamp(2em, 5vw, 3.5em);
       margin-bottom: 4vh;
       background: linear-gradient(90deg, #ff0000, #ff8c00, #ffff00, #00ff00, #00bfff, #4b0082, #8b00ff);
@@ -123,12 +134,13 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
   width: 100%;
   max-width: 1080px;
   height: 100%;
-  max-height: 1920px;
   margin: 0 auto;
   position: relative;
   background: radial-gradient(ellipse at 50% 0%, #1a0533 0%, #0a0a0a 60%);
   display: none;
   overflow: hidden;
+  flex-direction: column;
+  box-shadow: inset 0 0 120px rgba(0,0,0,0.6);
 }
 
     /* Space Background - Stars Layer */
@@ -141,19 +153,24 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       height: 100%;
       background-image:
         radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 55px 90px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(2px 2px at 90px 40px, #fff, transparent),
         radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(2px 2px at 160px 30px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 160px 30px, #fff, transparent),
         radial-gradient(1px 1px at 200px 60px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(2px 2px at 250px 20px, #fff, transparent),
-        radial-gradient(1px 1px at 300px 50px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(2px 2px at 350px 90px, #fff, transparent),
-        radial-gradient(1px 1px at 400px 40px, rgba(255,255,255,0.9), transparent);
+        radial-gradient(2px 2px at 240px 110px, #fff, transparent),
+        radial-gradient(1px 1px at 280px 25px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 320px 70px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(2px 2px at 370px 45px, #fff, transparent),
+        radial-gradient(1px 1px at 410px 95px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 450px 20px, #fff, transparent),
+        radial-gradient(1px 1px at 30px 140px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 180px 170px, #fff, transparent),
+        radial-gradient(2px 2px at 340px 150px, rgba(255,255,255,0.8), transparent);
       background-repeat: repeat;
-      background-size: 500px 500px;
-      animation: twinkle 8s ease-in-out infinite alternate;
-      opacity: 0.5;
+      background-size: 500px 200px;
+      animation: twinkle 6s ease-in-out infinite alternate;
+      opacity: 0.6;
       z-index: 0;
       pointer-events: none;
     }
@@ -165,37 +182,53 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 150%;
-      height: 150%;
-      background: radial-gradient(ellipse at 30% 50%, rgba(75, 0, 130, 0.15) 0%, transparent 50%),
-                  radial-gradient(ellipse at 70% 50%, rgba(0, 100, 255, 0.1) 0%, transparent 50%),
-                  radial-gradient(ellipse at 50% 80%, rgba(139, 0, 255, 0.08) 0%, transparent 40%);
-      animation: nebulaShift 20s ease-in-out infinite alternate;
+      width: 160%;
+      height: 160%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(75, 0, 130, 0.2) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 50%, rgba(0, 100, 255, 0.12) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 80%, rgba(139, 0, 255, 0.1) 0%, transparent 40%),
+                  radial-gradient(ellipse at 20% 20%, rgba(255, 0, 128, 0.05) 0%, transparent 40%),
+                  radial-gradient(ellipse at 80% 30%, rgba(0, 200, 255, 0.05) 0%, transparent 40%);
+      animation: nebulaShift 25s ease-in-out infinite alternate;
       z-index: 0;
       pointer-events: none;
     }
 
     @keyframes twinkle {
       0% { opacity: 0.3; }
-      100% { opacity: 0.6; }
+      100% { opacity: 0.7; }
     }
 
     @keyframes nebulaShift {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      100% { transform: translate(-50%, -50%) scale(1.1); }
+      0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) scale(1.15) rotate(3deg); }
     }
 
 
 
+    /* Chakra Row — evenly distributes buttons vertically */
+    #chakra-row {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 60px 0 35px 0;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      transition: padding-bottom 0.3s ease;
+    }
+
     /* Chakra Buttons */
     .chakra-btn {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      position: relative;
+      left: auto;
+      transform: none;
       width: clamp(80px, 15vw, 140px);
       height: clamp(80px, 15vw, 140px);
       border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.3);
+      border: 2px solid rgba(255,255,255,0.25);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -209,21 +242,34 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       z-index: 10;
       font-size: clamp(0.8em, 2vw, 1em);
       overflow: visible;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.12);
     }
-    .chakra-btn:hover { transform: translateX(-50%) scale(1.05); }
-.chakra-btn.active {
-  box-shadow: 0 0 60px var(--chakra-color, currentColor), inset 0 0 30px rgba(255,255,255,0.3);
-  border-color: white;
-  animation: chakraPulse 2s ease-in-out infinite;
-  transition: box-shadow 0.5s ease;
-}
-.chakra-btn {
-  transition: all 0.3s ease, box-shadow 0.5s ease;
-}
-.chakra-btn .freq { font-size: clamp(1em, 3vw, 1.4em); margin-top: 8px; transition: font-size 0.3s ease; letter-spacing: 0.03em; }
-.chakra-btn .symbol { font-size: clamp(1.2em, 2.5vw, 1.6em); margin-bottom: 4px; line-height: 1; }
-.chakra-btn .name { font-size: clamp(0.7em, 1.5vw, 0.9em); opacity: 0.9; transition: opacity 0.3s ease; letter-spacing: 0.05em; }
+    .chakra-btn:hover {
+      transform: scale(1.06);
+      border-color: rgba(255,255,255,0.5);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.12), inset 0 1px 0 rgba(255,255,255,0.18);
+    }
+    .chakra-btn.active {
+      box-shadow: 0 0 80px var(--chakra-color, currentColor), 0 0 120px rgba(255,255,255,0.08), inset 0 0 30px rgba(255,255,255,0.3), inset 0 0 60px var(--chakra-color);
+      border-color: rgba(255,255,255,0.9);
+      animation: chakraPulse 2s ease-in-out infinite;
+      transition: box-shadow 0.5s ease;
+    }
+    .chakra-btn:active {
+      transform: scale(0.94);
+      transition-duration: 0.05s;
+    }
+    .chakra-btn.journey-active {
+      box-shadow: 0 0 100px var(--chakra-color), 0 0 150px rgba(255,255,255,0.15), inset 0 0 40px rgba(255,255,255,0.3);
+      animation: chakraPulse 1s ease-in-out infinite;
+    }
+    .chakra-btn.active:hover {
+      transform: scale(1.06);
+    }
+    .chakra-btn .freq { font-size: clamp(0.85em, 2.5vw, 1.2em); margin-top: 4px; transition: all 0.3s ease; letter-spacing: 0.06em; font-weight: 300; opacity: 0.85; }
+    .chakra-btn.active .freq { font-weight: 500; opacity: 1; text-shadow: 0 0 10px var(--chakra-color); }
+    .chakra-btn .symbol { font-size: clamp(1.3em, 2.8vw, 1.8em); margin-bottom: 1px; line-height: 1; filter: brightness(1.15); transition: filter 0.3s ease; }
+    .chakra-btn .name { font-family: 'Cinzel', serif; font-weight: 600; font-size: clamp(0.6em, 1.3vw, 0.8em); opacity: 0.9; transition: opacity 0.3s ease; letter-spacing: 0.08em; text-transform: uppercase; }
 .chakra-btn.active .name { opacity: 1; }
 
     /* Chakra Symbols */
@@ -253,8 +299,8 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
     }
 
     @keyframes chakraPulse {
-      0%, 100% { transform: translateX(-50%) scale(1); }
-      50% { transform: translateX(-50%) scale(1.03); }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
     }
 
     @keyframes ringRotate {
@@ -263,14 +309,14 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       100% { transform: rotate(360deg); border-color: rgba(255,255,255,0.4); }
     }
 
-    /* Evenly spaced Chakra Positions (7 chakras, 8% to 65% of height - leaves room for controls) */
-#crown { top: 8%; background: linear-gradient(135deg, #4B0082, #8B00FF); --chakra-color: #8B00FF; }
-#third-eye { top: 18%; background: linear-gradient(135deg, #191970, #4B0082); --chakra-color: #4B0082; }
-#throat { top: 28%; background: linear-gradient(135deg, #0000CD, #00BFFF); --chakra-color: #00BFFF; }
-#heart { top: 38%; background: linear-gradient(135deg, #008000, #00FF00); --chakra-color: #00FF00; }
-#solar-plexus { top: 48%; background: linear-gradient(135deg, #FFD700, #FFFF00); --chakra-color: #FFFF00; }
-#sacral { top: 58%; background: linear-gradient(135deg, #FF4500, #FF8C00); --chakra-color: #FF8C00; }
-#root { top: 68%; background: linear-gradient(135deg, #8B0000, #FF0000); --chakra-color: #FF0000; }
+    /* Chakra colors */
+#crown { background: linear-gradient(135deg, #4B0082, #8B00FF); --chakra-color: #8B00FF; }
+#third-eye { background: linear-gradient(135deg, #191970, #4B0082); --chakra-color: #4B0082; }
+#throat { background: linear-gradient(135deg, #0000CD, #00BFFF); --chakra-color: #00BFFF; }
+#heart { background: linear-gradient(135deg, #008000, #00FF00); --chakra-color: #00FF00; }
+#solar-plexus { background: linear-gradient(135deg, #FFD700, #FFFF00); --chakra-color: #FFFF00; }
+#sacral { background: linear-gradient(135deg, #FF4500, #FF8C00); --chakra-color: #FF8C00; }
+#root { background: linear-gradient(135deg, #8B0000, #FF0000); --chakra-color: #FF0000; }
 
     /* Desktop/Horizontal: scale buttons and add spacing */
     @media (min-width: 768px) and (min-height: 500px) {
@@ -282,18 +328,22 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       .chakra-btn .freq { font-size: clamp(0.8em, 2vw, 1em); margin-top: 4px; }
     }
 
-    /* Wide screens: reduce spacing to prevent overlap */
+    /* Wide/short screens: smaller buttons */
     @media (max-height: 700px) and (min-width: 600px) {
-      #crown { top: 8%; }
-      #third-eye { top: 18%; }
-      #throat { top: 28%; }
-      #heart { top: 38%; }
-      #solar-plexus { top: 48%; }
-      #sacral { top: 58%; }
-      #root { top: 68%; }
       .chakra-btn {
         width: clamp(50px, 7vw, 80px);
         height: clamp(50px, 7vw, 80px);
+      }
+      #chakra-row {
+        padding: 30px 0 35px 0;
+      }
+    }
+
+    /* Short screens: reduce chakra row padding */
+    @media (max-height: 600px) {
+      #chakra-row {
+        padding-top: 20px;
+        padding-bottom: 30px;
       }
     }
 
@@ -315,6 +365,9 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
     flex-direction: row-reverse;
     gap: clamp(15px, 2.5vw, 30px);
     z-index: 10;
+    padding: 0;
+    width: auto;
+    align-items: center;
   }
   .chakra-btn {
     position: relative;
@@ -337,32 +390,30 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 
 /* Portrait mode (including mobile): shift chakras left, description on right */
 @media (max-width: 1023px) {
-  .chakra-btn {
-    left: 30%;
+  #chakra-row {
+    align-items: flex-start;
+    padding-left: 25%;
   }
   #chakra-info {
     right: 3%;
     left: auto;
-    width: 280px;
+    width: min(280px, 40vw);
   }
 }
 
 /* Mobile: chakra button sizes and spacing */
 @media (max-width: 480px) {
+  #chakra-row {
+    padding: 40px 0 30px 0;
+    padding-left: 20%;
+  }
   .chakra-btn {
     width: clamp(55px, 11vw, 75px);
     height: clamp(55px, 11vw, 75px);
     font-size: clamp(0.65em, 1.6vw, 0.85em);
   }
   .chakra-btn .freq { font-size: clamp(0.75em, 2.2vw, 0.95em); margin-top: 3px; }
-  .chakra-btn .symbol { font-size: clamp(0.9em, 1.8vw, 1.3em); }
-  #crown { top: 4%; }
-  #third-eye { top: 12.5%; }
-  #throat { top: 21%; }
-  #heart { top: 29.5%; }
-  #solar-plexus { top: 38%; }
-  #sacral { top: 46.5%; }
-  #root { top: 55%; }
+  .chakra-btn .symbol { font-size: clamp(1em, 2.2vw, 1.4em); }
 }
 
 @media (max-width: 360px) {
@@ -396,22 +447,75 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       .chakra-btn .symbol { font-size: clamp(0.9em, 1.8vw, 1.2em); }
     }
 
+/* Controls Wrapper — collapsible with toggle tab */
+#controls-wrapper {
+  margin-top: auto;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+/* Toggle tab */
+#controls-toggle {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(to top, rgba(8,8,12,0.97), rgba(16,8,28,0.9));
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.65em;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+#controls-toggle:hover {
+  color: rgba(255,255,255,0.6);
+  background: rgba(24, 12, 42, 0.95);
+}
+#controls-toggle .toggle-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  font-size: 0.8em;
+}
+#controls-wrapper.collapsed .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* Controls content slides */
+#controls-wrapper.collapsed #controls {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top-width: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+#controls-wrapper.collapsed #controls-toggle {
+  border-top-color: rgba(255,255,255,0.03);
+}
+
 /* Bottom Controls - Two-group layout */
 #controls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  max-height: 250px;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease, border-top-width 0.35s ease, min-height 0.35s ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  min-height: 56px;
-  background: linear-gradient(to top, rgba(10,10,10,0.98), rgba(10,10,10,0.85));
-  border-top: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(12px);
-  z-index: 50;
+  gap: 6px;
+  padding: 8px 10px;
+  min-height: 52px;
+  background: linear-gradient(to top, rgba(8,8,12,0.97) 0%, rgba(16,8,28,0.92) 50%, rgba(16,8,28,0.85) 100%);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Left group: selects + journey */
@@ -433,13 +537,13 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 
 /* Shared select/button base */
 #controls select, #controls button {
-  height: 34px;
+  height: 32px;
   padding: 0 10px;
-  font-size: 0.8em;
+  font-size: 0.78em;
   letter-spacing: 0.03em;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(30, 10, 45, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(20, 10, 35, 0.7);
   color: white;
   cursor: pointer;
   display: flex;
@@ -447,16 +551,15 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
   justify-content: center;
   font-family: inherit;
   white-space: nowrap;
+  transition: all 0.2s ease;
 }
-#controls select { transition: background 0.2s ease, border-color 0.2s ease; }
-#controls button { transition: all 0.2s ease; }
-#controls select option { background: #1a0523; color: white; }
+#controls select option { background: #0d0418; color: white; }
 #controls select:hover, #controls button:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.18);
 }
 #controls button:hover { transform: translateY(-1px); }
-#controls button:active { transform: translateY(0); }
+    #controls button:active { transform: scale(0.96); }
 
 /* Select arrow styling */
 #controls select {
@@ -512,13 +615,13 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 .readouts {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 8px;
-  border-left: 1px solid rgba(255,255,255,0.06);
-  border-right: 1px solid rgba(255,255,255,0.06);
+  gap: 6px;
+  padding: 0 6px;
+  border-left: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid rgba(255,255,255,0.05);
 }
 #progress-indicator {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
   font-size: 0.75em;
   text-align: center;
   white-space: nowrap;
@@ -553,11 +656,11 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 
 /* Icon-only action buttons */
 .icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   padding: 0 !important;
-  font-size: 1.05em !important;
-  border-radius: 6px;
+  font-size: 1em !important;
+  border-radius: 8px;
   flex-shrink: 0;
 }
 #stop-all-btn {
@@ -574,21 +677,27 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 
 /* Mobile: stack into two rows */
 @media (max-width: 480px) {
+  #controls-wrapper {
+    z-index: 55;
+  }
+  #controls-toggle {
+    height: 26px;
+  }
   #controls {
     flex-direction: column;
     height: auto;
-    padding: 10px;
-    gap: 10px;
+    padding: 8px 10px;
+    gap: 8px;
   }
   #controls-left, #controls-right {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
   #controls-right {
-    padding-top: 8px;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.05);
   }
   .readouts {
     border: none;
@@ -601,8 +710,8 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
 
 @media (max-width: 360px) {
   #controls select, #controls button {
-    height: 32px;
-    font-size: 0.75em;
+    height: 30px;
+    font-size: 0.72em;
   }
   #binaural-select { min-width: 120px; }
   #preset-select { min-width: 100px; }
@@ -740,15 +849,48 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
   100% { stroke-dashoffset: -40; }
 }
 
-/* Active chakra button text adjustment */
-.chakra-btn.active .freq {
-  font-size: clamp(0.75em, 2.2vw, 1.1em);
-}
+    /* Ambient floating particles */
+    #ambient-particles {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .ambient-particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
 
-/* Energy line transitions */
-#energy-line {
-  transition: stroke 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
-}
+    /* Energy line SVG — overlays chakra row */
+    .energy-line-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      overflow: visible;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .energy-line-svg.has-energy {
+      opacity: 1;
+    }
+    /* Energy line transitions */
+    #energy-line {
+      transition: stroke 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
+    }
+    /* Hide energy line in horizontal desktop mode */
+    @media (min-width: 1024px) {
+      .energy-line-svg {
+        display: none;
+      }
+    }
 
 /* Notification Toast */
 #notification-toast {
@@ -774,27 +916,47 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
     }
 
     /* Journey Countdown Timer */
+    .journey-progress-wrap {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .journey-progress-wrap.visible { display: flex; }
     #journey-timer {
       color: rgba(255,255,255,0.8);
       font-size: 0.85em;
       font-variant-numeric: tabular-nums;
-      min-width: 70px;
+      min-width: 60px;
       text-align: center;
-      display: none;
     }
-    #journey-timer.visible { display: block; }
+    #journey-progress {
+      width: 60px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    #journey-progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #ff0000, #ff8c00, #ffff00, #00ff00, #00bfff, #4b0082, #8b00ff);
+      transition: width 0.5s ease;
+    }
 
     /* Stationary Chakra Info Panel */
     #chakra-info {
       display: none;
       position: absolute;
       width: min(280px, 90vw);
-      padding: 16px;
+      padding: 16px 16px 16px 20px;
       border-radius: 12px;
-      background: linear-gradient(135deg, rgba(10,10,10,0.95), rgba(26,5,51,0.95));
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
+      background: linear-gradient(135deg, rgba(12,12,18,0.96), rgba(20,8,40,0.96));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid var(--current-chakra-color, #8b00ff);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       color: white;
       font-size: 0.85em;
       z-index: 100;
@@ -817,36 +979,50 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.1);
-      color: white;
-      font-size: 0.85em;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      font-size: 0.8em;
       line-height: 1;
       cursor: pointer;
       align-items: center;
       justify-content: center;
+      transition: all 0.2s ease;
     }
     #chakra-info.pinned #info-dismiss-btn {
       display: flex;
     }
-    #info-dismiss-btn:hover { background: rgba(255,255,255,0.25); }
+    #info-dismiss-btn:hover { background: rgba(255,255,255,0.15); color: white; }
     #info-name {
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 1.05em;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      margin-bottom: 2px;
+      font-size: 1.1em;
       background: linear-gradient(90deg, var(--current-chakra-color, #8b00ff), #fff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    #info-freq { opacity: 0.8; margin-bottom: 6px; }
-    #info-desc { opacity: 0.7; line-height: 1.4; font-size: 0.85em; }
+    #info-freq {
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      opacity: 0.65;
+      margin-bottom: 8px;
+      font-size: 0.85em;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    #info-desc { opacity: 0.7; line-height: 1.5; font-size: 0.85em; }
 
-    /* Chakra button refinements */
+    #chakra-row {
+      touch-action: none;
+    }
     .chakra-btn {
       will-change: transform;
-    }
-    .chakra-btn:hover {
-      filter: brightness(1.15);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
   </style>
 </head>
@@ -902,6 +1078,9 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
   <div class="text" id="breathing-text">Inhale</div>
 </div>
 
+<!-- Ambient Particles -->
+<div id="ambient-particles"></div>
+
 <!-- Top Overlay (game-style UI buttons) -->
 <div id="top-overlay">
   <button id="help-btn" title="Keyboard Shortcuts (?)">?</button>
@@ -938,11 +1117,22 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
   <button id="info-dismiss-btn" title="Dismiss">✕</button>
   <div id="info-name"></div>
   <div id="info-freq"></div>
+  <div id="info-element" style="display:none;font-size:0.75em;opacity:0.5;margin-bottom:8px;letter-spacing:0.05em;"></div>
   <div id="info-desc"></div>
 </div>
 
 <!-- Chakra Buttons -->
 <div id="chakra-row">
+    <!-- Energy Line SVG — connects active chakras with flowing light -->
+    <svg id="energy-line-svg" class="energy-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="energy-gradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8B00FF" />
+          <stop offset="100%" stop-color="#FF0000" />
+        </linearGradient>
+      </defs>
+      <path id="energy-line" d="M 10 0 L 10 100" stroke="rgba(255,255,255,0.15)" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="8 6" />
+    </svg>
     <div class="chakra-btn" id="crown" data-index="6">
       <div class="symbol"></div>
       <div class="name">Crown</div>
@@ -981,6 +1171,10 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
     </div>
 
     <!-- Bottom Controls -->
+    <div id="controls-wrapper">
+      <button id="controls-toggle" title="Toggle Controls">
+        <span class="toggle-icon">▼</span>
+      </button>
     <div id="controls">
 
       <!-- Left: selects + journey -->
@@ -1016,8 +1210,11 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
             <option value="90">90 min</option>
           </select>
         </div>
+        <div class="journey-progress-wrap">
+          <div id="journey-timer"></div>
+          <div id="journey-progress"><div id="journey-progress-fill"></div></div>
+        </div>
         <button id="journey-btn" title="Start Chakra Journey">🧘 Journey</button>
-        <div id="journey-timer"></div>
       </div>
 
       <!-- Right: readouts + actions -->
@@ -1034,6 +1231,7 @@ html, body { width: 100%; height: 100%; background: #0a0a0a; font-family: 'Inter
         <button id="stop-all-btn" class="icon-btn" title="Stop All">⏹</button>
       </div>
 
+    </div>
     </div>
   </div>
 
@@ -1124,6 +1322,17 @@ const volumeSlider = document.getElementById('volume-slider');
 const energyLine = document.getElementById('energy-line');
 const activeCountEl = document.getElementById('active-count');
 const presetSelect = document.getElementById('preset-select');
+const controlsWrapper = document.getElementById('controls-wrapper');
+const controlsToggle = document.getElementById('controls-toggle');
+
+// Controls toggle
+controlsToggle.addEventListener('click', () => {
+  controlsWrapper.classList.toggle('collapsed');
+});
+// Default: expanded on desktop, collapsed on mobile
+if (window.innerWidth <= 480) {
+  controlsWrapper.classList.add('collapsed');
+}
 
 // Preset System
 const presets = {
@@ -1256,24 +1465,111 @@ function startBreathingAnimation() {
     });
 
     // Launch Screen: Init Audio on Tap
+    // Launch particle burst
+    function createLaunchBurst() {
+      const colors = ['#ff0000', '#ff8c00', '#ffff00', '#00ff00', '#00bfff', '#4b0082', '#8b00ff'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const angle = (i / 30) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+        const dist = 100 + Math.random() * 150;
+        const size = 2 + Math.random() * 4;
+        p.style.cssText = `
+          position: fixed; left: 50%; top: 50%;
+          width: ${size}px; height: ${size}px;
+          background: ${color};
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 2000;
+          box-shadow: 0 0 ${size * 3}px ${color};
+          --tx: ${Math.cos(angle) * dist}px;
+          --ty: ${Math.sin(angle) * dist}px;
+          animation: launchBurst 0.8s ease-out forwards;
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+      }
+    }
+
+    // Add launch burst keyframe
+    const launchStyle = document.createElement('style');
+    launchStyle.textContent = `
+      @keyframes launchBurst {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+        100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.5); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(launchStyle);
+
     launchScreen.addEventListener('click', () => {
+      launchScreen.classList.add('exiting');
+      createLaunchBurst();
       try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const resume = audioContext.state === 'suspended' ? audioContext.resume() : Promise.resolve();
         resume.then(() => {
-          launchScreen.style.display = 'none';
-          appContainer.style.display = 'block';
+          setTimeout(() => {
+            launchScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+            initAmbientParticles();
+          }, 400);
         }).catch(() => {
-          // Resume failed but proceed anyway
-          launchScreen.style.display = 'none';
-          appContainer.style.display = 'block';
+          setTimeout(() => {
+            launchScreen.style.display = 'none';
+            appContainer.style.display = 'flex';
+            initAmbientParticles();
+          }, 400);
         });
       } catch (e) {
-        // AudioContext creation failed — still show the app
-        launchScreen.style.display = 'none';
-        appContainer.style.display = 'block';
+        setTimeout(() => {
+          launchScreen.style.display = 'none';
+          appContainer.style.display = 'flex';
+          initAmbientParticles();
+        }, 400);
       }
     });
+
+    // Ambient Particle System
+    function initAmbientParticles() {
+      const container = document.getElementById('ambient-particles');
+      if (!container) return;
+      const particleCount = 15;
+      const colors = ['rgba(139,0,255,0.4)', 'rgba(0,191,255,0.3)', 'rgba(255,255,255,0.2)', 'rgba(75,0,130,0.3)'];
+      // Add CSS for drift animation
+      const pStyle = document.createElement('style');
+      pStyle.textContent = `
+        @keyframes particleDrift {
+          0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+          10% { opacity: var(--p-max-opacity, 0.5); }
+          90% { opacity: var(--p-max-opacity, 0.5); }
+          100% { transform: translateY(var(--p-dy, -200px)) translateX(var(--p-dx, 50px)) scale(0.3); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(pStyle);
+      for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement('div');
+        p.className = 'ambient-particle';
+        const size = 2 + Math.random() * 4;
+        const x = Math.random() * 100;
+        const y = 20 + Math.random() * 70;
+        const dur = 8 + Math.random() * 12;
+        const delay = Math.random() * 15;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const dx = (Math.random() - 0.5) * 80;
+        const dy = -(60 + Math.random() * 160);
+        const maxOp = 0.2 + Math.random() * 0.3;
+        p.style.cssText = `
+          left: ${x}%; top: ${y}%;
+          width: ${size}px; height: ${size}px;
+          background: ${color};
+          box-shadow: 0 0 ${size * 4}px ${color};
+          --p-dx: ${dx}px; --p-dy: ${dy}px;
+          --p-max-opacity: ${maxOp};
+          animation: particleDrift ${dur}s ease-in-out ${delay}s infinite;
+        `;
+        container.appendChild(p);
+      }
+    }
 
     // Binaural Mode Change Handler
     binauralSelect.addEventListener('change', (e) => {
@@ -1344,16 +1640,50 @@ function startBreathingAnimation() {
     // Stop All
     stopAllBtn.addEventListener('click', stopAllChakras);
 
-// Chakra Button Click Handlers
-chakraBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const index = parseInt(btn.dataset.index);
-    if (activeChakras[index]) {
-      stopChakra(index);
-    } else {
-      startChakra(index);
-    }
-  });
+// Drag-to-activate: slide finger across chakras
+let dragPointerId = null;
+let dragToggled = new Set();
+const chakraRow = document.getElementById('chakra-row');
+
+chakraRow.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('.chakra-btn');
+  if (!btn) return;
+
+  dragPointerId = e.pointerId;
+  dragToggled = new Set();
+
+  const index = parseInt(btn.dataset.index);
+  if (activeChakras[index]) { stopChakra(index); } else { startChakra(index); }
+  dragToggled.add(index);
+  chakraRow.setPointerCapture(e.pointerId);
+});
+
+chakraRow.addEventListener('pointermove', (e) => {
+  if (dragPointerId === null || e.pointerId !== dragPointerId) return;
+
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const btn = el?.closest('.chakra-btn');
+  if (!btn) return;
+
+  const index = parseInt(btn.dataset.index);
+  if (dragToggled.has(index)) return;
+
+  if (activeChakras[index]) { stopChakra(index); } else { startChakra(index); }
+  dragToggled.add(index);
+});
+
+document.addEventListener('pointerup', (e) => {
+  if (e.pointerId === dragPointerId) {
+    dragPointerId = null;
+    dragToggled = new Set();
+  }
+});
+
+document.addEventListener('pointercancel', (e) => {
+  if (e.pointerId === dragPointerId) {
+    dragPointerId = null;
+    dragToggled = new Set();
+  }
 });
 
 // Keyboard Shortcuts
@@ -1386,13 +1716,13 @@ document.addEventListener('keydown', (e) => {
 
 // Chakra Descriptions for Tooltip
 const chakraDescriptions = [
-  { name: 'Root Chakra (Muladhara)', desc: 'Located at the base of the spine. Governs stability, security, and survival instincts.' },
-  { name: 'Sacral Chakra (Svadhisthana)', desc: 'Located below the navel. Governs creativity, sexuality, and emotional balance.' },
-  { name: 'Solar Plexus Chakra (Manipura)', desc: 'Located at the upper abdomen. Governs personal power, confidence, and will.' },
-  { name: 'Heart Chakra (Anahata)', desc: 'Located at the center of the chest. Governs love, compassion, and emotional healing.' },
-  { name: 'Throat Chakra (Vishuddha)', desc: 'Located at the throat. Governs communication, self-expression, and truth.' },
-  { name: 'Third Eye Chakra (Ajna)', desc: 'Located between the eyebrows. Governs intuition, insight, and imagination.' },
-  { name: 'Crown Chakra (Sahasrara)', desc: 'Located at the top of the head. Governs spirituality, enlightenment, and universal connection.' }
+  { name: 'Root Chakra (Muladhara)', element: 'Earth', desc: 'Located at the base of the spine. Governs stability, security, and survival instincts.' },
+  { name: 'Sacral Chakra (Svadhisthana)', element: 'Water', desc: 'Located below the navel. Governs creativity, sexuality, and emotional balance.' },
+  { name: 'Solar Plexus Chakra (Manipura)', element: 'Fire', desc: 'Located at the upper abdomen. Governs personal power, confidence, and will.' },
+  { name: 'Heart Chakra (Anahata)', element: 'Air', desc: 'Located at the center of the chest. Governs love, compassion, and emotional healing.' },
+  { name: 'Throat Chakra (Vishuddha)', element: 'Ether', desc: 'Located at the throat. Governs communication, self-expression, and truth.' },
+  { name: 'Third Eye Chakra (Ajna)', element: 'Light', desc: 'Located between the eyebrows. Governs intuition, insight, and imagination.' },
+  { name: 'Crown Chakra (Sahasrara)', element: 'Cosmic', desc: 'Located at the top of the head. Governs spirituality, enlightenment, and universal connection.' }
 ];
 
 // Chakra Info Panel Elements
@@ -1400,6 +1730,7 @@ const chakraInfo = document.getElementById('chakra-info');
 const infoName = document.getElementById('info-name');
 const infoFreq = document.getElementById('info-freq');
 const infoDesc = document.getElementById('info-desc');
+const infoElement = document.getElementById('info-element');
 
 // Track whether a preset description is pinned
 let presetInfoPinned = false;
@@ -1418,7 +1749,11 @@ chakraBtns.forEach(btn => {
     const chakra = chakraDescriptions[index];
     const chakraColor = getComputedStyle(btn).getPropertyValue('--chakra-color').trim() || '#8b00ff';
     infoName.textContent = chakra.name;
-    infoFreq.textContent = `${frequencies[index]} Hz - ${index === 0 ? 'Grounding' : index === 1 ? 'Creativity' : index === 2 ? 'Power' : index === 3 ? 'Love' : index === 4 ? 'Expression' : index === 5 ? 'Intuition' : 'Spirituality'}`;
+    infoFreq.textContent = `${frequencies[index]} Hz — ${index === 0 ? 'Grounding' : index === 1 ? 'Creativity' : index === 2 ? 'Power' : index === 3 ? 'Love' : index === 4 ? 'Expression' : index === 5 ? 'Intuition' : 'Spirituality'}`;
+    if (infoElement && chakra.element) {
+      infoElement.textContent = `✦ ${chakra.element}`;
+      infoElement.style.display = 'block';
+    }
     infoDesc.textContent = chakra.desc;
     chakraInfo.style.setProperty('--current-chakra-color', chakraColor);
 
@@ -1428,6 +1763,9 @@ chakraBtns.forEach(btn => {
       const btnCenterY = btnRect.top + btnRect.height / 2;
       chakraInfo.style.top = `${btnCenterY}px`;
       chakraInfo.style.transform = 'translateY(-50%)';
+    } else {
+      chakraInfo.style.transform = '';
+      chakraInfo.style.top = '';
     }
     chakraInfo.classList.add('visible');
   });
@@ -1570,13 +1908,16 @@ updateProgress();
 // Update Energy Line based on active chakras
 function updateEnergyLine() {
   if (!energyLine) return;
+  const energySvg = document.querySelector('.energy-line-svg');
   const activeCount = activeChakras.filter(c => c !== null).length;
   if (activeCount === 0) {
     energyLine.style.stroke = 'rgba(255,255,255,0.15)';
-    energyLine.style.strokeWidth = '8';
+    energyLine.style.strokeWidth = '4';
     energyLine.style.filter = 'none';
     energyLine.style.animation = 'none';
+    if (energySvg) energySvg.classList.remove('has-energy');
   } else {
+    energySvg.classList.add('has-energy');
     const intensity = activeCount / 7;
     // Dynamic color based on lowest and highest active chakra
     const activeIndices = activeChakras.reduce((acc, chakra, idx) => chakra ? [...acc, idx] : acc, []);
@@ -1586,8 +1927,8 @@ function updateEnergyLine() {
       energyLine.style.stroke = `url(#energy-gradient)`;
       updateEnergyGradient(lowestColor, highestColor);
     }
-    energyLine.style.strokeWidth = 8 + intensity * 12;
-    energyLine.style.filter = `blur(${intensity * 3}px)`;
+    energyLine.style.strokeWidth = 4 + intensity * 10;
+    energyLine.style.filter = `blur(${intensity * 2}px)`;
     energyLine.style.animation = `energyFlow ${3 - intensity * 2}s linear infinite`;
   }
 }
@@ -1685,6 +2026,8 @@ let journeyCountdownInterval = null;
 let journeyRemainingSeconds = 0;
 const journeyBtn = document.getElementById('journey-btn');
 const journeyTimerEl = document.getElementById('journey-timer');
+const journeyProgressWrap = document.querySelector('.journey-progress-wrap');
+const journeyProgressFill = document.getElementById('journey-progress-fill');
 const journeyDurationSelect = document.getElementById('journey-duration-select');
 
 // Get total journey duration in ms
@@ -1723,8 +2066,11 @@ journeyBtn.addEventListener('click', () => {
     clearInterval(journeyCountdownInterval);
     journeyBtn.textContent = '🧘 Journey';
     journeyBtn.style.background = ''; // reset to default
-    journeyTimerEl.classList.remove('visible');
     journeyTimerEl.textContent = '00:00';
+    journeyProgressWrap.classList.remove('visible');
+    journeyProgressFill.style.width = '0%';
+    // Clear chakra journey highlight
+    document.querySelectorAll('.chakra-btn').forEach(b => b.classList.remove('journey-active'));
     showNotification('Journey stopped');
     return;
   }
@@ -1737,7 +2083,10 @@ journeyBtn.addEventListener('click', () => {
   journeyRemainingSeconds = Math.round(totalMs / 1000);
   journeyBtn.textContent = '⏹ Stop Journey';
   journeyBtn.style.background = 'rgba(200, 0, 0, 0.4)';
-  journeyTimerEl.classList.add('visible');
+  // Auto-expand controls to show journey progress
+  controlsWrapper.classList.remove('collapsed');
+  journeyProgressWrap.classList.add('visible');
+  journeyProgressFill.style.width = '0%';
   updateJourneyCountdown();
   journeyCountdownInterval = setInterval(updateJourneyCountdown, 1000);
   showNotification(`Starting Journey - ${perChakraSec}s per chakra`);
@@ -1748,6 +2097,14 @@ journeyBtn.addEventListener('click', () => {
   // Activate chakras sequentially (Root to Crown = 0 to 6)
   let currentIndex = 0;
 
+  function updateJourneyProgress(index) {
+    const pct = ((index + 1) / 7) * 100;
+    journeyProgressFill.style.width = `${Math.min(pct, 100)}%`;
+    document.querySelectorAll('.chakra-btn').forEach(b => b.classList.remove('journey-active'));
+    const btn = document.querySelector(`.chakra-btn[data-index="${index}"]`);
+    if (btn) btn.classList.add('journey-active');
+  }
+
   function activateNext() {
     if (!journeyActive) return;
 
@@ -1757,6 +2114,7 @@ journeyBtn.addEventListener('click', () => {
 
     if (currentIndex < 7) {
       startChakra(currentIndex);
+      updateJourneyProgress(currentIndex);
       currentIndex++;
       journeyTimeout = setTimeout(activateNext, perChakraMs);
     } else {
@@ -1767,8 +2125,9 @@ journeyBtn.addEventListener('click', () => {
         clearInterval(journeyCountdownInterval);
         journeyBtn.textContent = '🧘 Journey';
         journeyBtn.style.background = '';
-        journeyTimerEl.classList.remove('visible');
-        journeyTimerEl.textContent = '00:00';
+        journeyProgressWrap.classList.remove('visible');
+        journeyProgressFill.style.width = '0%';
+        document.querySelectorAll('.chakra-btn').forEach(b => b.classList.remove('journey-active'));
         showNotification('Journey complete!');
       }, perChakraMs);
     }
